@@ -43,7 +43,7 @@ CREATE TABLE utilisateurs (
 - **Afficher une colonne de la table avec une colonne d'une table reliée à elle grâce à une clé étrangère**:
 	`SELECT {nom_table.nom_collone_à_afficher}, {nom_table_reliée.nom_collone_à_afficher} AS {nom_colonne_affiché} FROM {nom_table} JOIN {nom_table_reliée} ON {nom_table.clé_étrangère = {nom_table_reliée.clé_primaire};`
 	
-	**exemple**: SELECT livres.titre, auteurs.nom AS auteurFROM livresJOIN auteurs ON livres.auteur_id = auteurs.id;
+	**exemple**: SELECT livres.titre, auteurs.nom AS auteur FROM livresJOIN auteurs ON livres.auteur_id = auteurs.id;
 
 
 ## Jointure
@@ -54,3 +54,40 @@ FROM utilisateurs
 INNER JOIN commandes
 ON utilisateurs.id = commandes.utilisateur_id;
 ```
+
+
+
+
+SELECT c.nom
+FROM client c
+JOIN location l ON c.id_client = l.id_client
+GROUP BY c.id_client, c.nom
+HAVING COUNT(DISTINCT l.id_vehicule) > 1;
+
+
+SELECT 
+    v.id_vehicule,
+    v.marque,
+    v.modele,
+    SUM(date_fin - date_debut) AS duree_totale_en_jours
+FROM 
+    location l
+JOIN 
+    vehicule v ON l.id_vehicule = v.id_vehicule
+GROUP BY 
+    v.id_vehicule, v.marque, v.modele;
+
+
+
+BEGIN;
+
+-- 1. Insertion de la location
+INSERT INTO location (id_client, id_vehicule, date_debut, date_fin, montant)
+VALUES (2, 4, '2025-06-01', '2025-06-10', 300000);
+
+-- 2. Mise à jour de la disponibilité du véhicule
+UPDATE vehicule
+SET disponible = FALSE
+WHERE id_vehicule = 4;
+
+COMMIT;
